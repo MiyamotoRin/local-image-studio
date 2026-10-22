@@ -1,0 +1,51 @@
+{
+  "release": "master-982-0518b34",
+  "models": [
+    [
+      "leejet/Z-Image-Turbo-GGUF",
+      "z_image_turbo-Q3_K.gguf",
+      "4b44bdaa7814f20d7cf144e3939bd93aa32f50660204dd0c2aea5c5376232980"
+    ],
+    [
+      "unsloth/Qwen3-4B-Instruct-2507-GGUF",
+      "Qwen3-4B-Instruct-2507-Q4_K_M.gguf",
+      "3605803b982cb64aead44f6c1b2ae36e3acdb41d8e46c8a94c6533bc4c67e597"
+    ],
+    [
+      "Comfy-Org/z_image_turbo",
+      "split_files/vae/ae.safetensors",
+      "afc8e28272cd15db3919bacdb6918ce9c1ed22e96cb12c4d5ed0fba823529e38"
+    ],
+    [
+      "leejet/FLUX.2-klein-4B-GGUF",
+      "flux-2-klein-4b-Q4_0.gguf",
+      "d1023499ef3f2f82ff7c50e6778495195c1b6cc34835741778868428111f9ff4"
+    ],
+    [
+      "unsloth/Qwen3-4B-GGUF",
+      "Qwen3-4B-Q4_K_M.gguf",
+      "f6f851777709861056efcdad3af01da38b31223a3ba26e61a4f8bf3a2195813a"
+    ],
+    [
+      "Comfy-Org/flux2-klein-4B",
+      "split_files/vae/flux2-vae.safetensors",
+      "868fe7b343cc8f3a19dbcfcafbc3d5f888802be3f89bd81b65b3621a066ce8f3"
+    ],
+    [
+      "vanes430/Anima-Turbo-V1.1-GGUF",
+      "anima-turbo-v1.1-Q4_K_M.gguf",
+      "709fceeec6b4f0eb155330c83fd2539406e86c01e431407276a1f31095484782"
+    ],
+    [
+      "circlestone-labs/Anima",
+      "split_files/text_encoders/qwen_3_06b_base.safetensors",
+      "cd2a512003e2f9f3cd3c32a9c3573f820bb28c940f73c57b1ddaa983d9223eba"
+    ],
+    [
+      "circlestone-labs/Anima",
+      "split_files/vae/qwen_image_vae.safetensors",
+      "a70580f0213e67967ee9c95f05bb400e8fb08307e017a924bf3441223e023d1f"
+    ]
+  ],
+  "sd_cli_sha256": "e30d10d2309ac4f48167b6208564893ba63ce093d0f5e849ed7e736ae2d67c95"
+}

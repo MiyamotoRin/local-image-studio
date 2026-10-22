@@ -1,0 +1,7 @@
+{
+  "engine_path": "bin/sd-cli.exe",
+  "models_dir": "models",
+  "output_dir": "images",
+  "data_dir": "data",
+  "max_vram": 3.2
+}
