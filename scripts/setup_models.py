@@ -14,7 +14,11 @@ sys.path.insert(0, str(ROOT))
 from app_config import load_config
 
 GROUPS = {'z-image-turbo': (0, 1, 2), 'flux2-klein-4b': (3, 4, 5),
-          'anima-turbo': (6, 7, 8)}
+          'anima-turbo': (6, 7, 8), 'z-image-base': (1, 2)}
+UPSCALERS = (
+    ('v0.1.0', 'RealESRGAN_x4plus.pth', '4fa0d38905f75ac06eb49a7951b426670021be3018265fd191d2125df9d682f1'),
+    ('v0.2.2.4', 'RealESRGAN_x4plus_anime_6B.pth', 'f872d837d3c90ed2e05227bed711af5671a6fd1c9f7d7e91c911a61f155e99da'),
+)
 
 
 def digest(path):
@@ -72,18 +76,24 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--engine', action='store_true', help='Install tested Windows CUDA 12 engine into bin/')
     parser.add_argument('--model', choices=GROUPS)
+    parser.add_argument('--upscalers', action='store_true', help='Install optional Real-ESRGAN upscalers')
     parser.add_argument('--list', action='store_true', help='List files and sources without downloading')
     args = parser.parse_args()
     manifest = json.loads((ROOT / 'model-files.json').read_text())
     if args.list:
         for name, indexes in GROUPS.items():
             print(name)
+            if name == 'z-image-base':
+                from setup_z_image_base import URL, SHA256
+                print(f'  {URL} (SHA256 {SHA256})')
             for index in indexes:
                 repo, file, checksum = manifest['models'][index]
                 print(f'  {repo}: {file} (SHA256 {checksum})')
+        for version, filename, checksum in UPSCALERS:
+            print(f'upscaler: {filename} ({version}, SHA256 {checksum})')
         return
-    if not args.engine and not args.model:
-        parser.error('Choose --engine, --model, or --list')
+    if not args.engine and not args.model and not args.upscalers:
+        parser.error('Choose --engine, --model, --upscalers, or --list')
     if args.engine:
         install_engine(manifest)
     if args.model:
@@ -93,6 +103,14 @@ def main():
             repo, file, checksum = manifest['models'][index]
             download(f'https://huggingface.co/{repo}/resolve/main/{file}',
                      config['models_dir'] / Path(file).name, checksum)
+        if args.model == 'z-image-base':
+            from setup_z_image_base import install
+            install()
+    if args.upscalers:
+        config = load_config(ROOT)
+        for version, filename, checksum in UPSCALERS:
+            download(f'https://github.com/xinntao/Real-ESRGAN/releases/download/{version}/{filename}',
+                     config['models_dir'] / 'upscalers' / filename, checksum)
     print('Setup complete')
 
 

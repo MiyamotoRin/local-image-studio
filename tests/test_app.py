@@ -77,6 +77,8 @@ class UITests(unittest.TestCase):
                 self.assertEqual(ui.count.get(), '1')
                 self.assertEqual(ui.model_id(), 'anima-turbo')
             finally:
+                for job in root.tk.call('after', 'info'):
+                    root.after_cancel(job)
                 root.destroy()
                 app.DATA_DIR, app.OUTPUT_DIR = previous
 

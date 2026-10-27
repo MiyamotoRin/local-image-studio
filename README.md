@@ -1,19 +1,24 @@
-# Local Image Studio
+# Local Image Studio v2.0.0
 
 <img src="assets/studio.png" width="96" alt="Local Image Studio icon">
 
 Windows向けのシンプルなローカル画像生成UI。モデルを選び、プロンプトを入力して生成できます。
 推論には [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) を使用します。
-**Windows + NVIDIA CUDA向けの初期版です。モデル・推論エンジンは同梱していません。**
+**Windows + NVIDIA CUDA向けです。モデル・推論エンジンは同梱していません。**
 
 ## できること
 
-- Z-Image Turbo / FLUX.2 klein 4B / Anima Turboの切り替え
+- Z-Image Base / Z-Image Turbo / FLUX.2 klein 4B / Anima Turboの切り替え
 - 解像度、比率、ステップ、seedの指定
 - 1〜100枚の逐次生成と途中停止（完成した画像は保持）
 - PNG / JPEG保存。JPEG品質の指定
 - プロンプト・設定を画像内に保存し、画像から呼び戻す
 - 旧形式のPNG＋JSONも読み込み可能
+- 保存画像ギャラリー、拡大表示・前後移動、設定の再利用
+- 元画像を保持した2倍高精細化（Real-ESRGANモデルを別途取得）
+- CFG調整、Baseのネガティブプロンプト、Base/Turbo別のLoRA設定
+- 約160万画素プリセット、設定欄のスクロール、生成途中の簡易プレビュー
+- Draw Things画像の基本設定読み込みと互換メタデータ保存
 
 生成はローカルで動作します。初回のライブラリ・エンジン・モデル取得にはインターネット接続が必要です。
 クラウドAPIキーやアカウント登録はアプリ自体には不要です。
@@ -47,7 +52,7 @@ Windows 10/11 x64、NVIDIA GPU、対応するNVIDIAドライバー、**Python 3.
 ```
 
 ダウンロード先は `models/`、エンジンは `bin/` です。SHA256を照合します。
-モデルは1系統あたり約2.8〜6GB程度、エンジン・一時ダウンロードにも空き容量が必要です。
+モデルは1系統あたり数GB以上（Base本体だけで約4.59GB）、エンジン・一時ダウンロードにも空き容量が必要です。
 `--list` で取得対象をダウンロードせずに確認できます。
 
 自動取得を使わない場合は、[確認済みリリース](https://github.com/leejet/stable-diffusion.cpp/releases/tag/master-982-0518b34)
@@ -77,12 +82,15 @@ masterpiece, best quality, safe, adult woman, blue hair, white jacket, cherry bl
 
 | モデル | 導入する量子化版 | 標準ステップ |
 |---|---|---:|
+| Z-Image Base | Q4_0 | 28 |
 | Z-Image Turbo | Q3_K | 8 |
 | FLUX.2 klein 4B | Q4_0 | 4 |
 | Anima Turbo v1.1 | Q4_K_M | 8 |
 
-現在の3モデルではCFGを1.0に固定しています。ネガティブプロンプト入力欄はありません。
-モデルの切り替えでステップ数が推奨値に戻ります。
+CFGは0〜20で指定できます。Baseは4.0、他のモデルは1.0が初期値です。
+モデル切り替えでステップ数とCFGが推奨値に戻ります。
+Baseではネガティブプロンプトを指定できます（CFGが1以下の場合は効きません）。
+Base/TurboのLoRAはモデル別に保持します。実LoRA推論は未検証です。
 seed=-1は各画像で異なるランダム値、固定seedは画像ごとに1ずつ加算します（最大値の次は0）。
 画像から設定を戻すと、その画像の実際のseedを使用し、枚数は1になります。
 JPEGは非可逆圧縮です。PNGは画素を劣化させず保存します。
@@ -132,3 +140,33 @@ CPUオフロードを利用します。`max_vram` はGPU全体の消費量の厳
 
 アプリのコードとアイコンは [MIT](LICENSE)。依存ライブラリ、推論エンジン、モデルはそれぞれ独立した条件で提供されます。
 詳細は [THIRD_PARTY.md](THIRD_PARTY.md) を参照してください。
+
+## v2.0.0の追加機能
+
+### Baseと高精細化モデルの導入
+
+```powershell
+.\.venv\Scripts\python.exe scripts\setup_models.py --model z-image-base
+.\.venv\Scripts\python.exe scripts\setup_models.py --upscalers
+```
+
+Base本体と共用エンコーダー/VAEを取得します。`Setup-Z-Image-Base.cmd` は取得後に試験生成も実行します。
+Baseは一部重みを実行時Q5_0へ変換する設定を使用します。モデル本体は書き換えません。
+
+### 保存画像・高精細化
+
+「保存画像を見る」で12枚ずつ一覧表示し、クリックで拡大、左右キーで前後移動できます。
+「この設定で生成する」で設定を復元します。「2倍に高精細化」は元画像と生成時の設定を保持し、別PNGとして保存します。
+Animaにはanime_6B、それ以外にはx4plusを使います。4倍推論後に2倍サイズへ縮小します。
+
+### LoRAと画像共有
+
+Base/TurboのLoRAボタンで対応する.safetensorsを選ぶと、設定したmodels_dirのloras/へコピーします。
+ファイルは上書きせず、一覧から外してもモデルを削除しません。LoRA本体は画像に含まれません。
+Draw Thingsとの交換は基本設定が対象です。量子化・サンプラー等が異なるため同じ画像の再現は保証しません。
+
+### 既存環境からの更新
+
+新しいフォルダーに展開し、Setup.cmdを実行してください。既存のconfig.jsonでモデルや画像保存先を指定できます。
+開発用ローカル版のprompt.txtとui-settings.jsonはdata/へコピーすると引き継げます。
+変更内容と検証上の制限は[リリースノート](RELEASE_NOTES.md)を参照してください。

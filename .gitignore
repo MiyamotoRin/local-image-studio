@@ -17,3 +17,9 @@ prompt.txt
 ui-settings.json
 .env
 .env.*
+
+.*-runtime/
+.release-*/
+*.before-*
+*.pth
+.base-setup-backup/

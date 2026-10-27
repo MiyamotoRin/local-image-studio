@@ -19,6 +19,7 @@ Always check the model authors' terms, including text encoders and VAEs.
 
 | Preset | Original model | Quantized distribution |
 |---|---|---|
+| Z-Image Base | [Tongyi-MAI/Z-Image](https://huggingface.co/Tongyi-MAI/Z-Image) | [unsloth/Z-Image-GGUF](https://huggingface.co/unsloth/Z-Image-GGUF) (pinned revision and SHA256 in setup_z_image_base.py) |
 | Z-Image Turbo | [Tongyi-MAI/Z-Image-Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo) | [leejet/Z-Image-Turbo-GGUF](https://huggingface.co/leejet/Z-Image-Turbo-GGUF) |
 | FLUX.2 klein 4B | [black-forest-labs/FLUX.2-klein-4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B) | [leejet/FLUX.2-klein-4B-GGUF](https://huggingface.co/leejet/FLUX.2-klein-4B-GGUF) |
 | Anima Turbo v1.1 | [circlestone-labs/Anima](https://huggingface.co/circlestone-labs/Anima) | [vanes430/Anima-Turbo-V1.1-GGUF](https://huggingface.co/vanes430/Anima-Turbo-V1.1-GGUF) |
@@ -28,3 +29,9 @@ upstream model conditions. It distinguishes restrictions on the model from comme
 The quantization page's metadata uses a different license label; this project does not treat that label as
 overriding the original model's conditions. Read the [original license section](https://huggingface.co/circlestone-labs/Anima#license)
 before using or redistributing it. No model is installed automatically on app startup.
+
+## Optional upscalers
+
+[Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) supplies RealESRGAN_x4plus and RealESRGAN_x4plus_anime_6B.
+See its [license](https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE).
+The download URLs and SHA256 checksums are pinned in scripts/setup_models.py. Weights are not included in this repository or release ZIP.
